@@ -8,7 +8,7 @@ const TILES = [
   { to: '/resume', tag: 'DOCS', label: 'Resume', icon: <DocIcon /> },
   { to: '/contact', tag: 'LINK', label: 'Contact', icon: <MailIcon /> },
   {
-    to: 'https://github.com/your-username',
+    to: 'https://github.com/EricSimoni',
     external: true,
     tag: 'CODE',
     label: 'GitHub',
