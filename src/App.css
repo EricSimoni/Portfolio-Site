@@ -75,7 +75,7 @@
   padding: 1.1rem 1.15rem;
   background: var(--panel);
   border: 1px solid var(--line-bright);
-  clip-path: polygon(0 0, calc(100% - 19px) 0, 100% 19px, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 19px, 100% 100%, 0 100%);
   color: var(--text);
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease,
     box-shadow 0.25s ease;
@@ -131,7 +131,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 18px;
+  width: 17px;
   height: 18px;
   stroke: var(--line-bright);
   stroke-width: 1.4;
@@ -195,3 +195,244 @@
 .placeholder__back:hover {
   border-color: var(--teal-bright);
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Shared content-page layout (Resume, and reuse this for About too)
+   ───────────────────────────────────────────────────────────────────── */
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  width: min(760px, 92vw);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) 0 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.page__back {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--teal-bright);
+  align-self: flex-start;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.page__back:hover {
+  border-color: var(--teal-bright);
+}
+
+.page__header {
+  margin-top: 0.5rem;
+}
+
+.page__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  color: var(--teal);
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+.page__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.5vw, 2.8rem);
+  margin: 0;
+}
+
+.page__subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin: 0.5rem 0 0;
+}
+
+.page__link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--teal-bright);
+  margin-top: 0.3rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.page__link:hover {
+  border-color: var(--teal-bright);
+}
+
+/* Panel: same angular-corner + glow-on-hover language as .nav-tile,
+   just a bigger block-level shape instead of a square button. */
+.panel {
+  position: relative;
+  background: var(--panel);
+  border: 2px solid var(--line-bright);
+  clip-path: polygon(0 0, calc(100% - 19px) 0, 100% 22px, 100% 100%, 0 100%);
+  padding: 1.5rem 1.6rem;
+  transition: border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.panel:hover {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.2), 0 0 24px rgba(45, 212, 191, 0.12);
+}
+
+.panel__title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+
+.panel__text {
+  font-family: var(--font-body);
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.panel__text + .panel__text {
+  margin-top: 1rem;
+}
+
+/* Entry: one job / degree / project block inside a panel */
+.entry + .entry {
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.entry__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+}
+
+.entry__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.entry__dates {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.entry__place {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin: 0.2rem 0 0.5rem;
+}
+
+.entry__desc {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Skill tags */
+.skill-group + .skill-group {
+  margin-top: 1rem;
+}
+
+.skill-group__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--teal-bright);
+  background: rgba(45, 212, 191, 0.08);
+  border: 1px solid rgba(45, 212, 191, 0.25);
+  padding: 0.25rem 0.6rem;
+}
+
+/*CSS for the contact page*/
+.form {
+  display: flex; flex-direction: column; gap: 1.1rem; 
+}
+
+.form__field {
+  display: flex; flex-direction: column; gap: 0.4rem; 
+}
+
+.form__label {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; color: var(--text-dim);
+}
+
+.form__input {
+  font-family: var(--font-body); font-size: 0.95rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--line-bright);
+  padding: 0.7rem 0.8rem;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form__input:focus { 
+  outline: none; border-color: var(--teal); box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25), 0 0 16px rgba(45, 212, 191, 0.15); 
+}
+
+.form__input--textarea {
+  resize: vertical; min-height: 120px; font-family: var(--font-body); 
+}
+
+.form__submit {
+  align-self: flex-start; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.08em;
+  color: var(--bg); background: var(--teal-bright); border: none; padding: 0.7rem 1.4rem;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  transition: background 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+}
+
+.form__submit:hover:not(:disabled) {
+  background: var(--teal); transform: translateY(-1px);
+}
+
+.form__submit:disabled { 
+  opacity: 0.5; cursor: not-allowed;
+}
+
+.form__error {
+  font-family: var(--font-mono); font-size: 0.8rem; color: #f87171; margin: 0;
+}
+
+.social-links { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+.social-link {
+  display: flex; align-items: center; gap: 0.1rem;
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+  background: var(--panel); border: 1px solid var(--line-bright);
+  padding: 0.55rem 0.9rem;
+  clip-path: polygon(0 0, calc(100% - 10px) 0px, 100% 10px, 100% 100%, 0 100%);
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.social-link:hover { color: var(--teal-bright); border-color: var(--teal); box-shadow: 0 0 16px rgba(45, 212, 191, 0.15); }
+.social-link__icon { display: flex; color: inherit; }
+.social-link__icon svg { width: 16px; height: 16px; }

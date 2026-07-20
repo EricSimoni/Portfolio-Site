@@ -67,8 +67,8 @@ button {
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    linear-gradient(var(--line) 1px, transparent 2px),
+    linear-gradient(90deg, var(--line) 1px, transparent 2px);
   background-size: 48px 48px;
   opacity: 0.35;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, #000 40%, transparent 90%);

@@ -69,3 +69,15 @@ export function CodeIcon() {
     </svg>
   )
 }
+
+export function LinkedInIcon() {
+  return (
+    <svg {...common} aria-hidden="true">
+      <rect x="3" y="3" width="20" height="20" rx="2" />
+      <line x1="8" y1="10" x2="8" y2="17" />
+      <circle cx="8" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
+      <path d="M12.5 17v-4.2c0-1.6 1-2.6 2.4-2.6s2.1 1 2.1 2.6V17" />
+      <line x1="12.5" y1="10" x2="12.5" y2="17" />
+    </svg>
+  )
+}
