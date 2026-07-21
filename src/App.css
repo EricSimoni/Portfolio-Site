@@ -73,18 +73,41 @@
   gap: 0.65rem;
   aspect-ratio: 1 / 0.95;
   padding: 1.1rem 1.15rem;
-  background: var(--panel);
-  border: 1px solid var(--line-bright);
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 19px, 100% 100%, 0 100%);
+  /* Fill IS the border color now — the visible "fill" comes from ::before below.
+     This avoids the classic clip-path + border sub-pixel rounding bug, where
+     zoom levels can cause the border to vanish along the diagonal cut. */
+  background: var(--line-bright);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
   color: var(--text);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease,
-    box-shadow 0.25s ease;
+  transition: background 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease;
+}
+
+/* The actual tile background, inset by 1px so a 1px ring of .nav-tile's
+   own background (the "border" color) shows around the edge. */
+.nav-tile::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  transition: background 0.2s ease;
+  z-index: 0;
+}
+
+.nav-tile:hover::before,
+.nav-tile:focus-visible::before {
+  background: var(--panel-hover);
+}
+
+/* Real content needs to sit above the ::before fill layer */
+.nav-tile > * {
+  position: relative;
+  z-index: 1;
 }
 
 .nav-tile:hover,
 .nav-tile:focus-visible {
-  background: var(--panel-hover);
-  border-color: var(--teal);
+  background: var(--teal);
   box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25), 0 0 28px rgba(45, 212, 191, 0.18),
     inset 0 0 24px rgba(45, 212, 191, 0.06);
   transform: translateY(-2px);
@@ -131,7 +154,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 17px;
+  width: 18px;
   height: 18px;
   stroke: var(--line-bright);
   stroke-width: 1.4;
@@ -197,7 +220,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────
-   Shared content-page layout (Resume, and reuse this for About too)
+   Shared content-page layout (Resume, and About)
    ───────────────────────────────────────────────────────────────────── */
 
 .page {
@@ -268,18 +291,33 @@
 }
 
 /* Panel: same angular-corner + glow-on-hover language as .nav-tile,
-   just a bigger block-level shape instead of a square button. */
+   just a bigger block-level shape instead of a square button.
+   Same layered-border technique as .nav-tile (see comment there) to
+   avoid the clip-path + border zoom rendering bug. */
 .panel {
   position: relative;
+  background: var(--line-bright);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  padding: calc(1.5rem + 1px) calc(1.6rem + 1px);
+  transition: background 0.2s ease, box-shadow 0.25s ease;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
   background: var(--panel);
-  border: 2px solid var(--line-bright);
-  clip-path: polygon(0 0, calc(100% - 19px) 0, 100% 22px, 100% 100%, 0 100%);
-  padding: 1.5rem 1.6rem;
-  transition: border-color 0.2s ease, box-shadow 0.25s ease;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+  z-index: 0;
+}
+
+.panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .panel:hover {
-  border-color: var(--teal);
+  background: var(--teal);
   box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.2), 0 0 24px rgba(45, 212, 191, 0.12);
 }
 
@@ -297,10 +335,6 @@
   color: var(--text);
   line-height: 1.6;
   margin: 0;
-}
-
-.panel__text + .panel__text {
-  margin-top: 1rem;
 }
 
 /* Entry: one job / degree / project block inside a panel */
@@ -376,63 +410,191 @@
   padding: 0.25rem 0.6rem;
 }
 
-/*CSS for the contact page*/
+.avatar-frame {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  padding: 4px;
+  background: var(--line-bright);
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+}
+
+.avatar-frame::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--teal) 60deg,
+    var(--teal-bright) 75deg,
+    transparent 90deg,
+    transparent 360deg
+  );
+  filter: drop-shadow(0 0 5px rgba(94, 234, 212, 0.6));
+  animation: avatar-spin 13.0s linear infinite;
+  /* Deliberately NO clip-path here — the parent's clip-path above
+     already clips this too. Adding one here would make the shape
+     rotate with the gradient again, which was the original bug. */
+}
+
+.avatar-frame__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.avatar-frame__inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes avatar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Contact form
+   ───────────────────────────────────────────────────────────────────── */
+
 .form {
-  display: flex; flex-direction: column; gap: 1.1rem; 
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
 }
 
 .form__field {
-  display: flex; flex-direction: column; gap: 0.4rem; 
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .form__label {
-  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
 }
 
+/* Note: .form__input stays on the plain border approach. ::before/::after
+   don't render on native <input>/<textarea> elements in any browser (they're
+   "replaced elements" with no generated-content box), so the layered-fill
+   technique used on .nav-tile/.panel/.social-link can't apply here. */
 .form__input {
-  font-family: var(--font-body); font-size: 0.95rem; color: var(--text);
-  background: var(--bg); border: 1px solid var(--line-bright);
-  padding: 0.7rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line-bright);
+  padding: 0.65rem 0.8rem;
   clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form__input:focus { 
-  outline: none; border-color: var(--teal); box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25), 0 0 16px rgba(45, 212, 191, 0.15); 
+.form__input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25), 0 0 16px rgba(45, 212, 191, 0.15);
 }
 
 .form__input--textarea {
-  resize: vertical; min-height: 120px; font-family: var(--font-body); 
+  resize: vertical;
+  min-height: 120px;
+  font-family: var(--font-body);
 }
 
 .form__submit {
-  align-self: flex-start; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.08em;
-  color: var(--bg); background: var(--teal-bright); border: none; padding: 0.7rem 1.4rem;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--bg);
+  background: var(--teal-bright);
+  border: none;
+  padding: 0.7rem 1.4rem;
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
   transition: background 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
 }
 
 .form__submit:hover:not(:disabled) {
-  background: var(--teal); transform: translateY(-1px);
+  background: var(--teal);
+  transform: translateY(-1px);
 }
 
-.form__submit:disabled { 
-  opacity: 0.5; cursor: not-allowed;
+.form__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .form__error {
-  font-family: var(--font-mono); font-size: 0.8rem; color: #f87171; margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #f87171;
+  margin: 0;
 }
 
-.social-links { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
-.social-link {
-  display: flex; align-items: center; gap: 0.1rem;
-  font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
-  background: var(--panel); border: 1px solid var(--line-bright);
-  padding: 0.55rem 0.9rem;
-  clip-path: polygon(0 0, calc(100% - 10px) 0px, 100% 10px, 100% 100%, 0 100%);
-  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+/* ─────────────────────────────────────────────────────────────────────
+   Social links strip (redundant contact paths, bottom of Contact page)
+   ───────────────────────────────────────────────────────────────────── */
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  justify-content: center;
 }
-.social-link:hover { color: var(--teal-bright); border-color: var(--teal); box-shadow: 0 0 16px rgba(45, 212, 191, 0.15); }
-.social-link__icon { display: flex; color: inherit; }
-.social-link__icon svg { width: 16px; height: 16px; }
+
+.social-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  background: var(--line-bright);
+  padding: calc(0.55rem + 1px) calc(0.9rem + 1px);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-link::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  z-index: 0;
+  transition: background 0.2s ease;
+}
+
+.social-link:hover::before {
+  background: var(--panel-hover);
+}
+
+.social-link > * {
+  position: relative;
+  z-index: 1;
+}
+
+.social-link:hover {
+  color: var(--teal-bright);
+  background: var(--teal);
+  box-shadow: 0 0 16px rgba(45, 212, 191, 0.15);
+}
+
+.social-link__icon {
+  display: flex;
+  color: inherit;
+}
+
+.social-link__icon svg {
+  width: 16px;
+  height: 16px;
+}

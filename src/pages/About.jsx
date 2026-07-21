@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import profileWebp from '../assets/profile.webp'
+import profileJpg from '../assets/profile.jpg'
 
 const BIO_PARAGRAPHS = [
   "I'm better at making things than describing myself, so this is mostly the former.",
@@ -19,7 +21,14 @@ export default function About() {
       <header className="page__header">
         <span className="page__eyebrow">// ABOUT</span>
         <h1 className="page__title">Eric Simoni</h1>
-        {/* TODO: put an image of myself here */}
+        <div className="avatar-frame">
+            <div className="avatar-frame__inner">
+                 <picture>
+                <source srcSet={profileWebp} type="image/webp" />
+                <img src={profileJpg} alt="Eric Simoni" />
+            </picture>
+            </div>
+        </div>
       </header>
 
       <section className="panel">
@@ -31,9 +40,9 @@ export default function About() {
       </section>
 
       <p className="page__link">
-        Want to work together?{' '}
+        {' '}
         <Link className="page__link" to="/contact">
-          Get in touch →
+          Want to work together? Get in touch →
         </Link>
       </p>
     </main>
