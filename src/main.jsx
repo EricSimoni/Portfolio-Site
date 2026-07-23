@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx'
 import Resume from './pages/Resume.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
+import Projects from './pages/Projects.jsx'
 import Placeholder from './pages/Placeholder.jsx'
 import Blackjack from './pages/Blackjack.jsx'
 
@@ -18,7 +19,7 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<Home />} />
           {/* Swap each placeholder out as the real page gets built */}
           <Route path="blackjack" element={<Blackjack />} />
-          <Route path="projects" element={<Placeholder title="Projects" />} />
+          <Route path="projects" element={<Projects />} />
           <Route path="about" element={<About />} />
           <Route path="resume" element={<Resume />} />
           <Route path="contact" element={<Contact />} />
