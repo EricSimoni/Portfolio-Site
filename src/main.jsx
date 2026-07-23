@@ -8,6 +8,7 @@ import Resume from './pages/Resume.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Placeholder from './pages/Placeholder.jsx'
+import Blackjack from './pages/Blackjack.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,7 +17,7 @@ createRoot(document.getElementById('root')).render(
         <Route element={<App />}>
           <Route index element={<Home />} />
           {/* Swap each placeholder out as the real page gets built */}
-          <Route path="blackjack" element={<Placeholder title="Blackjack" />} />
+          <Route path="blackjack" element={<Blackjack />} />
           <Route path="projects" element={<Placeholder title="Projects" />} />
           <Route path="about" element={<About />} />
           <Route path="resume" element={<Resume />} />

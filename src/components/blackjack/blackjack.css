@@ -1,0 +1,403 @@
+/* ─────────────────────────────────────────────────────────────────────
+   Playing card
+   Uses the same layered pseudo-element border technique as .nav-tile/
+   .panel elsewhere in the site (see App.css comments) — the outer
+   element is filled with the suit color, and ::before sits 1.5px inset
+   with the actual card face, so there's no `border` property fighting
+   with `clip-path` for pixel rounding.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────────────
+   Playing card + 3D flip
+   .bj-card-flip is the fixed-size perspective container. Inside it,
+   .bj-card-flip__inner is the piece Motion actually rotates — it holds
+   two stacked faces (front = rank/suit, back = card pattern), each
+   with backface-visibility: hidden so only whichever one is currently
+   rotated toward the viewer is actually visible.
+
+   .bj-card itself no longer has its own width/height — it fills
+   whichever face container it's placed in via inset: 0. Uses the same
+   layered pseudo-element border technique as .nav-tile/.panel elsewhere
+   in the site (see App.css comments) — the outer element is filled
+   with the suit color, and ::before sits 1.5px inset with the actual
+   card face, so there's no `border` property fighting with `clip-path`
+   for pixel rounding.
+   ───────────────────────────────────────────────────────────────────── */
+
+.bj-card-flip {
+  position: relative;
+  width: 92px;
+  height: 128px;
+  flex-shrink: 0;
+  perspective: 1000px;
+}
+
+.bj-card-flip__inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.bj-card-flip__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.bj-card-flip__face--back {
+  transform: rotateY(180deg);
+}
+
+.bj-card {
+  position: absolute;
+  inset: 0;
+  background: var(--line-bright); /* fallback ring color if no suit class matches */
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.bj-card--hearts {
+  background: var(--suit-hearts);
+}
+.bj-card--spades {
+  background: var(--suit-spades);
+}
+.bj-card--clubs {
+  background: var(--suit-clubs);
+}
+.bj-card--diamonds {
+  background: var(--suit-diamonds);
+}
+
+.bj-card__inner {
+  position: absolute;
+  inset: 1.5px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.4rem 0.5rem;
+}
+
+.bj-card__corner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.bj-card__corner--bottom {
+  align-self: flex-end;
+  transform: rotate(180deg);
+}
+
+.bj-card__rank {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.bj-card__pip {
+  font-size: 0.85rem;
+  line-height: 1;
+  margin-top: 0.1rem;
+}
+
+.bj-card__pip--center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.4rem;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* Color + glow each suit's pips by matching the same color used for
+   the card's outer ring, via currentColor (set on .bj-card__inner). */
+.bj-card--hearts .bj-card__inner {
+  color: var(--suit-hearts);
+}
+.bj-card--spades .bj-card__inner {
+  color: var(--suit-spades);
+}
+.bj-card--clubs .bj-card__inner {
+  color: var(--suit-clubs);
+}
+.bj-card--diamonds .bj-card__inner {
+  color: var(--suit-diamonds);
+}
+
+/* Rank text should stay readable (not suit-tinted) even though pips
+   inherit the suit color via currentColor above */
+.bj-card__rank {
+  color: var(--text) !important;
+}
+
+/* ---------- Card back (face-down) ---------- */
+
+.bj-card--back {
+  background: var(--line-bright);
+}
+
+.bj-card__back-pattern {
+  position: absolute;
+  inset: 1.5px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--line) 0,
+    var(--line) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Hand — a labeled row of cards
+   ───────────────────────────────────────────────────────────────────── */
+
+.bj-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bj-hand__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.bj-hand__total {
+  color: var(--teal-bright);
+  font-weight: 500;
+}
+
+.bj-hand__cards {
+  display: flex;
+  justify-content: center;
+}
+
+.bj-hand__card-slot {
+  margin-left: -32px; /* fanned overlap */
+}
+
+.bj-hand__card-slot:first-child {
+  margin-left: 0;
+}
+
+@media (max-width: 480px) {
+  .bj-card-flip {
+    width: 72px;
+    height: 100px;
+  }
+  .bj-card__pip--center {
+    font-size: 1.8rem;
+  }
+  .bj-hand__card-slot {
+    margin-left: -26px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Game table layout (Blackjack.jsx)
+   ───────────────────────────────────────────────────────────────────── */
+
+.bj-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.bj-message {
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--teal-bright);
+  text-shadow: 0 0 16px rgba(94, 234, 212, 0.4);
+  margin: 0;
+}
+
+.bj-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Secondary button (Stand) — same shape as .form__submit, muted color
+   so Hit reads as the "default" action. Uses the same layered-border
+   technique as .nav-tile/.panel (a <button> isn't a replaced element
+   like <input>, so pseudo-elements work fine here — see App.css notes). */
+.form__submit--secondary {
+  position: relative;
+  background: var(--line-bright);
+  color: var(--teal-bright);
+  padding: calc(0.7rem + 1px) calc(1.4rem + 1px);
+}
+
+.form__submit--secondary::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: background 0.2s ease;
+  z-index: -1;
+}
+
+.form__submit--secondary:hover:not(:disabled)::before {
+  background: var(--panel-hover);
+}
+
+.form__submit--secondary:hover:not(:disabled) {
+  background: var(--teal);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Betting: bankroll/bet readout + chip selector
+   ───────────────────────────────────────────────────────────────────── */
+
+.bj-hud {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.bj-hud__value {
+  color: var(--teal-bright);
+  margin-left: 0.4rem;
+}
+
+.bj-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+
+/* Chips use the same layered-border technique as the buttons/panels
+   elsewhere (see App.css notes) — <button> isn't a replaced element,
+   so pseudo-elements render fine here. Text is raw (unwrapped) content,
+   so ::before needs z-index: -1, not 0, to paint behind it rather than
+   over it (see the Stand-button fix earlier for the same reasoning). */
+.bj-chip {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--line-bright);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.bj-chip::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--panel);
+  z-index: -1;
+  transition: background 0.2s ease;
+}
+
+.bj-chip:hover:not(:disabled) {
+  background: var(--teal);
+  transform: translateY(-3px);
+}
+
+.bj-chip:hover:not(:disabled)::before {
+  background: var(--panel-hover);
+}
+
+.bj-chip:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.bj-chip--clear {
+  border-radius: 0;
+  width: auto;
+  height: 54px;
+  padding: 0 1rem;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bj-chip--clear::before {
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+.bj-out-of-eddies {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Deck asset — static stack of card backs, the conceptual origin/
+   destination point for the deal and collect animations
+   ───────────────────────────────────────────────────────────────────── */
+
+.bj-deck {
+  position: relative;
+  width: 70px;
+  height: 98px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.bj-deck__card {
+  position: absolute;
+  inset: 0;
+  background: var(--line-bright);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transform: translate(calc(var(--stack-index) * 2px), calc(var(--stack-index) * -2px));
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+}
+
+.bj-deck__card::before {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  background: var(--panel);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--line) 0,
+    var(--line) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+}

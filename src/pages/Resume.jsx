@@ -84,7 +84,7 @@ export default function Resume() {
         <span className="page__eyebrow">// RESUME</span>
         <h1 className="page__title">Eric Simoni</h1>
         <p className="page__subtitle">
-          Jetersville, VA · (804) 366-0261 · simoniericm@gmail.com
+          VA · simoniericm@gmail.com
         </p>
         <a
           className="page__link"
